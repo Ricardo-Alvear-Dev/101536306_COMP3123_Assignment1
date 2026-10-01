@@ -1,10 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
+import userRouter from "./routes/user/user.routes.ts";
+import employeeRouter from "./routes/employee/user.routes.ts";
 
 const server = express();
 
 server.use(express.json());
+server.use("/api/v1/user", userRouter);
+server.use("api/v1/emp", employeeRouter);
 
 const setUpServer = async () => {
   try {
@@ -19,7 +23,9 @@ const setUpServer = async () => {
       : new Error("Something went wrong with the database connection");
 
     serverConnection
-      ? console.log(`The server has connected to PORT: ${process.env.PORT || 3000}`)
+      ? console.log(
+          `The server has connected to PORT: ${process.env.PORT || 3000}`,
+        )
       : new Error("Something went wrong with the server connection");
   } catch (error) {
     if (error instanceof Error) return console.error(error);
