@@ -1,24 +1,25 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import userModel from "../../models/user/user.model";
 
-export const postSignUpUserService = (req: Request, res: Response) => {
-  try {
-    return res.status(StatusCodes.CREATED).json();
-  } catch (error) {
-    if (error instanceof Error)
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
-  }
+export const postSignUpUserService = async ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  return await userModel.create({ username, email, password });
 };
 
-export const postLoginUserService = (req: Request, res: Response) => {
-  try {
-    return res.status(StatusCodes.OK).json();
-  } catch (error) {
-    if (error instanceof Error)
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
-  }
+export const postLoginUserService = async ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  return await userModel.find({ username, email, password });
 };
