@@ -1,14 +1,17 @@
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
+import employeeRouter from "./routes/employee/employee.routes.ts";
+import healthRouter from "./routes/health/health.routes.ts";
 import userRouter from "./routes/user/user.routes.ts";
-import employeeRouter from "./routes/employee/user.routes.ts";
 
 const server = express();
 
 server.use(express.json());
+
 server.use("/api/v1/user", userRouter);
-server.use("api/v1/emp", employeeRouter);
+server.use("/api/v1/emp", employeeRouter);
+server.use("/health", healthRouter);
 
 const setUpServer = async () => {
   try {
