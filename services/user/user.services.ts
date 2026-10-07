@@ -25,6 +25,10 @@ export const postSignUpUserService = async ({
 
   if (!validInput) throw new Error("Invalid email or password");
 
+  const findEmail = await userModel.find({ email });
+
+  if (findEmail) throw new Error("Email already taken");
+
   return await userModel.create({ email, hashedPassword });
 };
 
