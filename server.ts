@@ -13,15 +13,15 @@ const limiter = rateLimit({
   message: "Too many requests received",
 });
 
-const server = express();
+const app = express();
 
-server.use(express.json());
-server.use(helmet() as unknown as express.RequestHandler);
-server.use(limiter);
+app.use(express.json());
+app.use(helmet() as unknown as express.RequestHandler);
+app.use(limiter);
 
-server.use("/api/v1/user", userRouter);
-server.use("/api/v1/emp", employeeRouter);
-server.use("/health", healthRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/emp", employeeRouter);
+app.use("/health", healthRouter);
 
 const setUpServer = async () => {
   try {
@@ -29,7 +29,7 @@ const setUpServer = async () => {
       process.env.MONGODB_URI as string,
     );
 
-    const serverConnection = server.listen(process.env.PORT || 3000);
+    const serverConnection = app.listen(process.env.PORT || 3000);
 
     dbConnection
       ? console.log("Connected to mongodb")
