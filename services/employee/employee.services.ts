@@ -131,7 +131,7 @@ export const putEmployeesIdService = async ({
   );
 };
 
-export const deleteEmployeesIdService = async (id: Number) => {
-  if (!id) throw new Error("Invalid id");
-  return await employeeModel.findByIdAndDelete({ id });
+export const deleteEmployeesIdService = async (eid: Number) => {
+  if (!eid) throw new Error("Invalid id");
+  return await employeeModel.findByIdAndDelete({ eid });
 };

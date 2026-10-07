@@ -115,9 +115,9 @@ export const deleteEmployeesIdController = async (
   res: Response,
 ) => {
   try {
-    const { id } = req.params;
+    const eid = req.query.eid;
 
-    await deleteEmployeesIdService(+id);
+    await deleteEmployeesIdService(+eid);
 
     return res.status(StatusCodes.NO_CONTENT).json();
   } catch (error) {
