@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
         "Please fill a valid email address",
       ],
     },
-    password: {
+    hashedPassword: {
       type: String,
       minLength: [5, "Please create a password longer than the length of 5"],
       required: true,

@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import zod from "zod";
 import userModel from "../../models/user/user.model";
 
@@ -13,13 +14,18 @@ export const postSignUpUserService = async ({
   email: string;
   password: string;
 }) => {
-  if (!email || !password) throw new Error("Invalid email or password");
+  email = email.toLowerCase().trim();
+  password = password.toLowerCase().trim();
 
   const validInput = userInputValidation.parse({ email, password });
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  if (!hashedPassword) throw new Error("Failed to hash password");
+
   if (!validInput) throw new Error("Invalid email or password");
 
-  return await userModel.create({ email, password });
+  return await userModel.create({ email, hashedPassword });
 };
 
 export const postLoginUserService = async ({
@@ -29,11 +35,20 @@ export const postLoginUserService = async ({
   email: string;
   password: string;
 }) => {
-  if (!email || !password) throw new Error("Invalid email or password");
+  email = email.toLowerCase().trim();
+  password = password.toLowerCase().trim();
 
   const validInput = userInputValidation.parse({ email, password });
 
   if (!validInput) throw new Error("Invalid email or password");
 
-  return await userModel.find({ email, password });
+  const user = await userModel.findOne({ email });
+
+  if (!user) throw new Error("Cannot find user");
+
+  const comparePassword = await bcrypt.compare(password, user.hashedPassword);
+
+  if (!comparePassword) throw new Error("Failed to verify password");
+
+  return user;
 };
