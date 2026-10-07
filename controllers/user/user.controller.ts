@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeData } from "../../logging/logging.function";
 import {
   postLoginUserService,
   postSignUpUserService,
 } from "../../services/user/user.services";
-import { writeData } from "../../logging/logging.function";
-import path from "node:path";
 
 const currentFilePath = fileURLToPath(import.meta.url);
 
@@ -14,9 +14,9 @@ export const postSignUpUserController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    await postSignUpUserService({ email, password });
+    const result = await postSignUpUserService({ email, password });
 
-    return res.status(StatusCodes.CREATED).json();
+    return res.status(StatusCodes.CREATED).json({ jwtToken: result });
   } catch (error) {
     if (error instanceof Error) {
       writeData(

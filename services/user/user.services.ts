@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import zod from "zod";
 import userModel from "../../models/user/user.model";
 
@@ -29,7 +30,17 @@ export const postSignUpUserService = async ({
 
   if (findEmail) throw new Error("Email already taken");
 
-  return await userModel.create({ email, hashedPassword });
+  const jwtToken = jwt.sign(
+    { email, hashedPassword },
+    process.env.JWT as string,
+    {
+      expiresIn: "1d",
+    },
+  );
+
+  await userModel.create({ email, hashedPassword });
+
+  return jwtToken;
 };
 
 export const postLoginUserService = async ({
