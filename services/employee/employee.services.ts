@@ -101,18 +101,7 @@ export const putEmployeesIdService = async ({
   department?: string;
   user?: string;
 }) => {
-  if (
-    !id ||
-    !first_name ||
-    !last_name ||
-    !email ||
-    !position ||
-    !salary ||
-    !date_of_joining ||
-    !department ||
-    !user
-  )
-    throw new Error("Invalid format");
+  if (!id) throw new Error("Invalid id");
 
   const validInput = employeeInputValidation.parse({
     first_name,
@@ -125,10 +114,21 @@ export const putEmployeesIdService = async ({
     user,
   });
 
-  // TODO: Figure out how to see which data needs to be updated and send the data to the database
   if (!validInput) throw new Error("Zod failure: Invalid employee data");
 
-  return await employeeModel.findByIdAndUpdate({ id }, { first_name });
+  return await employeeModel.findByIdAndUpdate(
+    { id },
+    {
+      first_name,
+      last_name,
+      email,
+      position,
+      salary,
+      date_of_joining,
+      department,
+      user,
+    },
+  );
 };
 
 export const deleteEmployeesIdService = async (id: Number) => {
