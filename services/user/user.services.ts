@@ -15,6 +15,8 @@ export const postSignUpUserService = async ({
   email: string;
   password: string;
 }) => {
+  if (!email || !password) throw new Error("Missing email or password");
+
   email = email.toLowerCase().trim();
   password = password.toLowerCase().trim();
 
@@ -50,6 +52,8 @@ export const postLoginUserService = async ({
   email: string;
   password: string;
 }) => {
+  if (!email || !password) throw new Error("Missing email or password");
+  
   email = email.toLowerCase().trim();
   password = password.toLowerCase().trim();
 

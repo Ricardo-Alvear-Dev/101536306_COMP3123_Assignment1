@@ -1,2 +1,2 @@
-Error: Invalid id. This error occurred on file: employee.controllers.ts
-2026-10-14T00:05:28.842Z
+Error: Cast to ObjectId failed for value "6acec1de77839253abf93r8d" (type string) at path "_id" for model "employeeSchema". This error occurred on file: employee.controllers.ts
+2026-10-14T21:56:53.972Z
