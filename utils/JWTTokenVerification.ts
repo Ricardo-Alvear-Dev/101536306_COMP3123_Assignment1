@@ -12,12 +12,12 @@ export const JWTTokenVerification = async (
 ) => {
   try {
     const result = jwt.verify(
-      req.headers.authorization?.split(" ")[0] as string,
+      req.headers.authorization?.split(" ")[1] as string,
       process.env.JWT as string,
     );
 
     if (result) {
-      next();
+      return next();
     }
 
     const currentFilePath = fileURLToPath(import.meta.url);

@@ -8,6 +8,7 @@ import {
   getAllEmployeesService,
   getEmployeesIdService,
   postAllEmployeesService,
+  putEmployeesIdService, // <-- Added this import
 } from "../../services/employee/employee.services";
 
 const currentFilePath = fileURLToPath(import.meta.url);
@@ -72,9 +73,9 @@ export const postAllEmployeesController = async (
 
 export const getEmployeesIdController = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { eid } = req.params;
 
-    const getSpecificEmployee = await getEmployeesIdService(+id);
+    const getSpecificEmployee = await getEmployeesIdService(eid);
 
     return res.status(StatusCodes.OK).json(getSpecificEmployee);
   } catch (error) {
@@ -92,11 +93,31 @@ export const getEmployeesIdController = async (req: Request, res: Response) => {
 
 export const putEmployeesIdController = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { eid } = req.params;
+    const {
+      first_name,
+      last_name,
+      email,
+      position,
+      salary,
+      date_of_joining,
+      department,
+      user,
+    } = req.body;
 
-    const putSpecificEmployee = await getEmployeesIdService(+id);
+    const updatedEmployee = await putEmployeesIdService({
+      eid,
+      first_name,
+      last_name,
+      email,
+      position,
+      salary,
+      date_of_joining,
+      department,
+      user,
+    });
 
-    return res.status(StatusCodes.CREATED).json(putSpecificEmployee);
+    return res.status(StatusCodes.OK).json(updatedEmployee);
   } catch (error) {
     if (error instanceof Error) {
       writeData(
@@ -115,9 +136,9 @@ export const deleteEmployeesIdController = async (
   res: Response,
 ) => {
   try {
-    const eid = req.query.eid;
+    const eid = req.query.eid as string;
 
-    await deleteEmployeesIdService(+eid);
+    await deleteEmployeesIdService(eid);
 
     return res.status(StatusCodes.NO_CONTENT).json();
   } catch (error) {

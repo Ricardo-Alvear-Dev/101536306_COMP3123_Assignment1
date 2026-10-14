@@ -14,9 +14,10 @@ employeeRouter
   .get(getAllEmployeeController)
   .post(postAllEmployeesController)
   .delete(deleteEmployeesIdController);
+
 employeeRouter
   .route("/employees/:eid")
   .get(getEmployeesIdController)
-  .put(putEmployeesIdController);
+  .patch(putEmployeesIdController);
 
 export default employeeRouter;

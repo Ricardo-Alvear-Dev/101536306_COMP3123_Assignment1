@@ -26,9 +26,9 @@ export const postSignUpUserService = async ({
 
   if (!validInput) throw new Error("Invalid email or password");
 
-  const findEmail = await userModel.find({ email });
+  const findEmail = await userModel.findOne({ email });
 
-  if (findEmail) throw new Error("Email already taken");
+  if (findEmail?.email) throw new Error("Email already taken");
 
   const jwtToken = jwt.sign(
     { email, hashedPassword },
@@ -59,7 +59,7 @@ export const postLoginUserService = async ({
 
   const user = await userModel.findOne({ email });
 
-  if (!user) throw new Error("Cannot find user");
+  if (!user?.email) throw new Error("Cannot find user");
 
   const comparePassword = await bcrypt.compare(password, user.hashedPassword);
 

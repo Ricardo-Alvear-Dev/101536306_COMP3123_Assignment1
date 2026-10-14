@@ -36,11 +36,16 @@ export const postLoginUserController = async (req: Request, res: Response) => {
 
     await postLoginUserService({ email, password });
 
-    return res.status(StatusCodes.OK).json();
+    return res.status(StatusCodes.OK).json("Logged in!");
   } catch (error) {
-    if (error instanceof Error)
+    if (error instanceof Error) {
+      writeData(
+        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
+      );
+
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ message: error.message });
+    }
   }
 };

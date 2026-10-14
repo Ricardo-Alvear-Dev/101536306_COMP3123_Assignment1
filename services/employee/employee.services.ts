@@ -4,15 +4,12 @@ import employeeModel from "../../models/employee/employee.model";
 const employeeInputValidation = zod.object({
   first_name: zod.string().trim(),
   last_name: zod.string().trim(),
-  email: zod
-    .email()
-    .regex(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
-    .trim(),
+  email: zod.string().email().trim(),
   position: zod.string().trim(),
   salary: zod.number().nonnegative(),
-  date_of_joining: zod.date(),
+  date_of_joining: zod.coerce.date(),
   department: zod.string().trim(),
-  user: zod.number(),
+  user: zod.string().trim(),
 });
 
 export const getAllEmployeesService = async () => {
@@ -75,13 +72,15 @@ export const postAllEmployeesService = async ({
   });
 };
 
-export const getEmployeesIdService = async (id: Number) => {
-  if (!id) throw new Error("Invalid id");
-  return await employeeModel.findById({ id });
+export const getEmployeesIdService = async (eid: string) => {
+  if (!eid) throw new Error("Invalid id");
+  return await employeeModel.findById(eid);
 };
 
+const employeeUpdateInputValidation = employeeInputValidation.partial();
+
 export const putEmployeesIdService = async ({
-  id,
+  eid,
   first_name,
   last_name,
   email,
@@ -91,7 +90,7 @@ export const putEmployeesIdService = async ({
   department,
   user,
 }: {
-  id?: number;
+  eid?: string;
   first_name?: string;
   last_name?: string;
   email?: string;
@@ -101,9 +100,11 @@ export const putEmployeesIdService = async ({
   department?: string;
   user?: string;
 }) => {
-  if (!id) throw new Error("Invalid id");
+  if (!eid) throw new Error("Invalid id");
 
-  const validInput = employeeInputValidation.parse({
+  const cleanId = eid.startsWith(":") ? eid.slice(1) : eid;
+
+  const validInput = employeeUpdateInputValidation.parse({
     first_name,
     last_name,
     email,
@@ -116,22 +117,19 @@ export const putEmployeesIdService = async ({
 
   if (!validInput) throw new Error("Zod failure: Invalid employee data");
 
+  // Filter out any fields that came back as undefined so they don't overwrite MongoDB
+  const filteredInput = Object.fromEntries(
+    Object.entries(validInput).filter(([_, v]) => v !== undefined),
+  );
+
   return await employeeModel.findByIdAndUpdate(
-    { id },
-    {
-      first_name,
-      last_name,
-      email,
-      position,
-      salary,
-      date_of_joining,
-      department,
-      user,
-    },
+    cleanId,
+    { $set: filteredInput },
+    { new: true, runValidators: true },
   );
 };
 
-export const deleteEmployeesIdService = async (eid: Number) => {
+export const deleteEmployeesIdService = async (eid: string) => {
   if (!eid) throw new Error("Invalid id");
-  return await employeeModel.findByIdAndDelete({ eid });
+  return await employeeModel.findByIdAndDelete(eid);
 };
