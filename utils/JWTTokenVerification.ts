@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import * as path from "path";
-import { fileURLToPath } from "url";
 import { writeData } from "../logging/logging.function";
 
 export const JWTTokenVerification = async (
@@ -20,7 +19,8 @@ export const JWTTokenVerification = async (
       return next();
     }
 
-    const currentFilePath = fileURLToPath(import.meta.url);
+    // __filename is natively available in CommonJS Node.js environments
+    const currentFilePath = __filename;
 
     writeData(
       `Error: You are not authorized to continue. This error occurred on file: ${path.basename(currentFilePath)}`,
@@ -31,7 +31,7 @@ export const JWTTokenVerification = async (
       .json({ error_message: "You are not authorized to continue" });
   } catch (error) {
     if (error instanceof Error) {
-      const currentFilePath = fileURLToPath(import.meta.url);
+      const currentFilePath = __filename;
 
       writeData(
         `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
