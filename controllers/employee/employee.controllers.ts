@@ -1,32 +1,32 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { writeData } from "../../logging/logging.function";
 import {
   deleteEmployeesIdService,
   getAllEmployeesService,
   getEmployeesIdService,
   postAllEmployeesService,
-  putEmployeesIdService, // <-- Added this import
+  putEmployeesIdService,
 } from "../../services/employee/employee.services";
 
-const currentFilePath = fileURLToPath(import.meta.url);
+const currentFilePath = __filename;
 
 export const getAllEmployeeController = async (req: Request, res: Response) => {
   try {
     const employeeData = await getAllEmployeesService();
     return res.status(StatusCodes.OK).json(employeeData);
   } catch (error) {
+    let errorMessage = "Internal Server Error";
     if (error instanceof Error) {
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
+      errorMessage = error.message;
     }
+    writeData(
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: errorMessage });
   }
 };
 
@@ -59,35 +59,35 @@ export const postAllEmployeesController = async (
 
     return res.status(StatusCodes.CREATED).json();
   } catch (error) {
+    let errorMessage = "Internal Server Error";
     if (error instanceof Error) {
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
+      errorMessage = error.message;
     }
+    writeData(
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: errorMessage });
   }
 };
 
 export const getEmployeesIdController = async (req: Request, res: Response) => {
   try {
     const { eid } = req.params;
-
     const getSpecificEmployee = await getEmployeesIdService(eid);
-
     return res.status(StatusCodes.OK).json(getSpecificEmployee);
   } catch (error) {
+    let errorMessage = "Internal Server Error";
     if (error instanceof Error) {
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
+      errorMessage = error.message;
     }
+    writeData(
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: errorMessage });
   }
 };
 
@@ -119,15 +119,16 @@ export const putEmployeesIdController = async (req: Request, res: Response) => {
 
     return res.status(StatusCodes.OK).json(updatedEmployee);
   } catch (error) {
+    let errorMessage = "Internal Server Error";
     if (error instanceof Error) {
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
+      errorMessage = error.message;
     }
+    writeData(
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: errorMessage });
   }
 };
 
@@ -137,19 +138,18 @@ export const deleteEmployeesIdController = async (
 ) => {
   try {
     const eid = req.query.eid as string;
-
     await deleteEmployeesIdService(eid);
-
     return res.status(StatusCodes.NO_CONTENT).json();
   } catch (error) {
+    let errorMessage = "Internal Server Error";
     if (error instanceof Error) {
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: error.message });
+      errorMessage = error.message;
     }
+    writeData(
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
+    );
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: errorMessage });
   }
 };
