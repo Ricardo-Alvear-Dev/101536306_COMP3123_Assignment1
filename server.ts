@@ -3,9 +3,9 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import mongoose from "mongoose";
-import employeeRouter from "./routes/employee/employee.routes.ts";
-import healthRouter from "./routes/health/health.routes.ts";
-import userRouter from "./routes/user/user.routes.ts";
+import employeeRouter from "./routes/employee/employee.routes";
+import healthRouter from "./routes/health/health.routes";
+import userRouter from "./routes/user/user.routes";
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
