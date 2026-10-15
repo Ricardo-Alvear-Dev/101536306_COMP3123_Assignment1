@@ -10,34 +10,41 @@ export const JWTTokenVerification = async (
   next: NextFunction,
 ) => {
   try {
-    const result = jwt.verify(
-      req.headers.authorization?.split(" ")[1] as string,
-      process.env.JWT as string,
-    );
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.split(" ")[1];
 
-    if (result) {
-      return next();
+    if (!token) {
+      const currentFilePath = __filename;
+      writeData(
+        `Error: No token provided. This error occurred on file: ${path.basename(currentFilePath)}`,
+      );
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({
+          error_message: "You are not authorized to continue (Missing token)",
+        });
     }
 
-    // __filename is natively available in CommonJS Node.js environments
+    // jwt.verify throws an error if verification fails
+    jwt.verify(token, process.env.JWT as string);
+
+    return next();
+  } catch (error) {
     const currentFilePath = __filename;
+    let errorMessage = "Internal Server Error";
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
 
     writeData(
-      `Error: You are not authorized to continue. This error occurred on file: ${path.basename(currentFilePath)}`,
+      `Error: ${errorMessage}. This error occurred on file: ${path.basename(currentFilePath)}`,
     );
 
+    // Differentiate between invalid token (Unauthorized) and server errors if needed,
+    // or return Internal Server Error as you had before:
     return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ error_message: "You are not authorized to continue" });
-  } catch (error) {
-    if (error instanceof Error) {
-      const currentFilePath = __filename;
-
-      writeData(
-        `Error: ${error.message}. This error occurred on file: ${path.basename(currentFilePath)}`,
-      );
-
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
-    }
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error_message: errorMessage });
   }
 };
