@@ -74,7 +74,7 @@ export const postAllEmployeesController = async (
 
 export const getEmployeesIdController = async (req: Request, res: Response) => {
   try {
-    const { eid } = req.params;
+    const eid = req.params.eid as string;
     const getSpecificEmployee = await getEmployeesIdService(eid);
     return res.status(StatusCodes.OK).json(getSpecificEmployee);
   } catch (error) {
@@ -93,7 +93,7 @@ export const getEmployeesIdController = async (req: Request, res: Response) => {
 
 export const putEmployeesIdController = async (req: Request, res: Response) => {
   try {
-    const { eid } = req.params;
+    const eid = req.params.eid as string;
     const {
       first_name,
       last_name,
